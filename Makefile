@@ -56,8 +56,6 @@ TST_BUILD_DIR	::=		./build/test
 COV_REPORT_DIR	::=		./coverage
 COV_FRONT_DIR	::=		./coverage/web
 
-STAMP			::=		./build/cflags.stamp
-
 # =============================================================================
 # Source and Object Files
 # =============================================================================
@@ -76,51 +74,14 @@ LIBRARY			::=		s21_decimal.a
 .PHONY: all debug release style_format style_check gcov_report clean rebuild gdb help
 
 # =============================================================================
-# Flag Change Detection
-# =============================================================================
-FLAG_FILE 		::=		./build/cflags.current
-LAST_CFLAGS 	::= 	$(shell cat $(FLAG_FILE) 2>/dev/null)
-
-# Only proceed with rebuild if flags have changed or flag file doesn't exist
-ifneq ($(CFLAGS),$(LAST_CFLAGS))
-    .PHONY: FORCE
-    FORCE:
-    $(shell mkdir -p ./build && echo "$(CFLAGS)" > $(FLAG_FILE))
-    $(info Compiler flags changed - forcing rebuild...)
-    REBUILD 	::= 	FORCE
-else
-    REBUILD 	::=
-endif
-
-# =============================================================================
 # All(general) and Help targets
 # =============================================================================
 all: ${LIBRARY}
 
-help:
-	@printf "TARGETS:\n"
-	@printf "\t%-20s %s\n" "all" "Build and run tests with style check"
-	@printf "\t%-20s %s\n" "test" "Compile and run all tests"
-	@printf "\t%-20s %s\n" "release" "Build optimized release version"
-	@printf "\t%-20s %s\n" "gdb" "Build debug version and run with gdb"
-	@printf "\t%-20s %s\n" "style_format" "Format code with clang-format"
-	@printf "\t%-20s %s\n" "style_check" "Check code style and run cppcheck"
-	@printf "\t%-20s %s\n" "gcov_report" "Generate coverage report"
-	@printf "\t%-20s %s\n" "clean" "Remove all build artifacts"
-	@printf "\t%-20s %s\n" "rebuild" "Clean and rebuild everything"
-	@printf "\t%-20s %s\n" "help" "Show this help message"
-	@printf "\n"
-	@printf "DIRECTORIES:\n"
-	@printf "\t%-20s %s\n" "$(COV_REPORT_DIR)" "directory with coverage info"
-	@printf "\t%-20s %s\n" "$(COV_FRONT_DIR)" "directory with coverage static web-page"
-	@printf "\t%-20s %s\n" "$(OBJ_BUILD_DIR)" "directory with object files"
-	@printf "\t%-20s %s\n" "$(TST_BUILD_DIR)" "directory with test object files"
-	@printf "\t%-20s %s\n" "$(INCLUDE)" "directory with header files"
-
 # =============================================================================
 # Build Rules
 # =============================================================================
-$(LIBRARY): $(LIB_OBJECTS) $(REBUILD)
+$(LIBRARY): $(LIB_OBJECTS)
 	$(info Assembling all together to static lib...)
 	@ar rcs $@ $(LIB_OBJECTS)
 	@ranlib $@
@@ -193,7 +154,7 @@ gdb: test
 
 clean:
 	$(info Cleaning the build artifacts...)
-	@rm -rf $(OBJ_BUILD_DIR) $(TST_BUILD_DIR) $(LIBRARY) ./test ./*.test ./coverage ./*.log ./s21_decimal.h
+	@rm -rf $(OBJ_BUILD) $(LIBRARY) ./test ./*.test ./coverage ./*.log
 
 rebuild: clean all
 
@@ -202,11 +163,11 @@ rebuild: clean all
 # =============================================================================
 $(OBJ_BUILD_DIR):
 	$(info Creating a directory for objective file...)
-	@mkdir -p $(OBJ_BUILD_DIR)
+	@mkdir -p build $(OBJ_BUILD_DIR)
 
 $(TST_BUILD_DIR):
 	$(info Creating a directory for test-objective file...)
-	@mkdir -p $(TST_BUILD_DIR)
+	@mkdir -p build $(TST_BUILD_DIR)
 
 $(COV_FRONT_DIR):
 	$(info Creating a direcory for coverage report...)
