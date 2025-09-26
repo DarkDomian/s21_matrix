@@ -25,7 +25,7 @@ START_TEST(test_is_null_returned) {
 END_TEST
 
 Suite* test_remove_matrix(void) {
-  Suite* ps = suite_create("add");
+  Suite* ps = suite_create("remove");
   TCase* tc = tcase_create("core");
 
   tcase_add_test(tc, test_is_null_returned);

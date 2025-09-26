@@ -9,9 +9,11 @@
 
 #define S21_SUCCESS 0  // success code. realy good to be returned
 #define S21_ERROR 1    // default error code or incorrect matrix
-#define S21_CALCERR \
-  2  // calculation error (mismatched matrix sizes; matrix for which
-     // calculations cannot be performed, etc.)
+/**
+ * @brief calculation error (musmatched matrix sizes; matrix for which
+ * calculations cannot be performed, etc)
+ */
+#define S21_CALCERR 2
 
 /*======================================================
     BOOL CODE

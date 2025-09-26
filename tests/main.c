@@ -12,6 +12,7 @@ int main(void) {
   SRunner *sr = srunner_create(test_remove_matrix());
 
   //  TODO(all): add after comment your suits...
+  srunner_add_suite(sr, test_create_matrix());
 
   //  Check for CK_RUN_SUITE and set a custom log file
   const char *suite = getenv("CK_RUN_SUITE");
