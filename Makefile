@@ -111,7 +111,7 @@ $(TST_BUILD_DIR)/%.o: $(TST_SOURCE_DIR)/%.c | $(TST_BUILD_DIR)
 # =============================================================================
 # Assemble Coverage Data to Web-Page
 # =============================================================================
-gcov_report: run.test | $(COV_FRONT_DIR)
+gcov_report: test | $(COV_FRONT_DIR)
 	$(info Generating coverage report...)
 	@lcov --test-name "s21_matrix" -v --output-file $(COV_REPORT_DIR)/coverage.info --capture --directory $(OBJ_BUILD_DIR)
 	@genhtml $(COV_REPORT_DIR)/coverage.info --show-navigation --dark-mode --legend --output-directory $(COV_FRONT_DIR)
