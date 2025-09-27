@@ -42,7 +42,7 @@ typedef struct matrix_struct {
 } matrix_t;
 
 /*======================================================
-    CONSTRUCTOR AND DESTRUCTOR
+    CORE OPERATIONS
 ========================================================*/
 
 /**
@@ -77,6 +77,10 @@ void s21_remove_matrix(matrix_t *A);
  * corresponding elements are identical (compared up to 6 decimal places).
  */
 int s21_eq_matrix(matrix_t *A, matrix_t *B);
+
+/*======================================================
+    ARITHMETIC OPERATIONS
+========================================================*/
 
 /**
  * @brief Add two matrices
@@ -128,6 +132,10 @@ int s21_mult_number(matrix_t *A, double number, matrix_t *result);
  */
 int s21_mult_matrix(matrix_t *A, matrix_t *B, matrix_t *result);
 
+/*======================================================
+    LINEAR ALGEBRA OPERATIONS
+========================================================*/
+
 /**
  * @brief Transpose a matrix
  * @param A Pointer to source matrix
@@ -138,6 +146,33 @@ int s21_mult_matrix(matrix_t *A, matrix_t *B, matrix_t *result);
  * @note Transpose operation swaps rows with columns: `result[i][j] = A[j][i]`
  */
 int s21_transpose(matrix_t *A, matrix_t *result);
+
+/**
+ * @brief Calculate inverse of a matrix
+ * @param A Pointer to source matrix
+ * @param result Pointer to matrix structure where the result will be stored
+ * @return `S21_SUCCESS` if operation successful, `S21_ERROR` if matrix is
+ * incorrect, `S21_CALCERR` if matrix is not square or determinant is zero
+ *
+ * @note The source matrix must be square and have non-zero determinant.
+ * Inverse is calculated as: `A^(-1) = (1/det(A)) * adjugate(A)^T`
+ */
+int s21_inverse_matrix(matrix_t *A, matrix_t *result);
+
+/**
+ * @brief Calculate determinant of a matrix
+ * @param A Pointer to source matrix
+ * @param result Pointer to double where the determinant value will be stored
+ * @return `S21_SUCCESS` if operation successful, `S21_ERROR` if matrix is
+ * incorrect, `S21_CALCERR` if matrix is not square
+ *
+ * @note The source matrix must be square. Uses recursive Laplace expansion.
+ */
+int s21_determinant(matrix_t *A, double *result);
+
+/*======================================================
+    AUXILIARY OPERATIONS
+========================================================*/
 
 /**
  * @brief Calculate matrix of algebraic complements (cofactor matrix)
@@ -151,28 +186,5 @@ int s21_transpose(matrix_t *A, matrix_t *result);
  * `A[i][j]`
  */
 int s21_calc_complements(matrix_t *A, matrix_t *result);
-
-/**
- * @brief Calculate determinant of a matrix
- * @param A Pointer to source matrix
- * @param result Pointer to double where the determinant value will be stored
- * @return `S21_SUCCESS` if operation successful, `S21_ERROR` if matrix is
- * incorrect, `S21_CALCERR` if matrix is not square
- *
- * @note The source matrix must be square. Uses recursive Laplace expansion.
- */
-int s21_determinant(matrix_t *A, double *result);
-
-/**
- * @brief Calculate inverse of a matrix
- * @param A Pointer to source matrix
- * @param result Pointer to matrix structure where the result will be stored
- * @return `S21_SUCCESS` if operation successful, `S21_ERROR` if matrix is
- * incorrect, `S21_CALCERR` if matrix is not square or determinant is zero
- *
- * @note The source matrix must be square and have non-zero determinant.
- * Inverse is calculated as: `A^(-1) = (1/det(A)) * adjugate(A)^T`
- */
-int s21_inverse_matrix(matrix_t *A, matrix_t *result);
 
 #endif  // S21_MATRIX_H

@@ -47,6 +47,8 @@ endif
 # =============================================================================
 INCLUDE			::=		./include
 
+OBJ_BUILD		::=		./build
+
 LIB_SOURCE_DIR	::=		./src
 OBJ_BUILD_DIR	::=		./build/obj
 
@@ -62,21 +64,20 @@ COV_FRONT_DIR	::=		./coverage/web
 LIB_SOURCE		=		$(wildcard $(LIB_SOURCE_DIR)/*.c)
 LIB_OBJECTS		=		$(patsubst $(LIB_SOURCE_DIR)/%.c, $(OBJ_BUILD_DIR)/%.o, $(LIB_SOURCE))
 
-
 TST_SOURCE		=		$(wildcard $(TST_SOURCE_DIR)/*.c)
 TST_OBJECTS		=		$(patsubst $(TST_SOURCE_DIR)/%.c, $(TST_BUILD_DIR)/%.o, $(TST_SOURCE))
 
 # =============================================================================
 # Main Targets
 # =============================================================================
-LIBRARY			::=		s21_decimal.a
+LIBRARY			::=		s21_matrix.a
 
-.PHONY: all debug release style_format style_check gcov_report clean rebuild gdb help
+.PHONY: all debug release style_format style_check gcov_report clean rebuild gdb
 
 # =============================================================================
 # All(general) and Help targets
 # =============================================================================
-all: ${LIBRARY}
+all: style_check gcov_report
 
 # =============================================================================
 # Build Rules
@@ -86,7 +87,7 @@ $(LIBRARY): $(LIB_OBJECTS)
 	@ar rcs $@ $(LIB_OBJECTS)
 	@ranlib $@
 
-$(OBJ_BUILD_DIR)/%.o: $(LIB_SOURCE_DIR)/%.c $(FLAG_FILE) | $(OBJ_BUILD_DIR)
+$(OBJ_BUILD_DIR)/%.o: $(LIB_SOURCE_DIR)/%.c | $(OBJ_BUILD_DIR)
 	$(info Building the $@ object file...)
 	@$(CC) $(CFLAGS) -c $< -o $@
 
@@ -95,24 +96,24 @@ $(OBJ_BUILD_DIR)/%.o: $(LIB_SOURCE_DIR)/%.c $(FLAG_FILE) | $(OBJ_BUILD_DIR)
 # =============================================================================
 test: $(TST_OBJECTS) $(LIBRARY)
 	$(info Compile tests and running with valgrind...)
-	@$(CC) $(CFLAGS) $(TST_OBJECTS) $(LIBRARY) $(TST_FLAG) -o $@
-	@CK_FORK=no valgrind --tool=memcheck --leak-check=full --track-origins=yes ./test
+	@$(CC) $(CFLAGS) $(TST_OBJECTS) $(LIBRARY) $(TST_FLAG) -o run.test
+	@CK_FORK=no valgrind --tool=memcheck --leak-check=full --track-origins=yes ./run.test
 
-$(TST_BUILD_DIR)/%.o: $(TST_SOURCE_DIR)/%.c $(FLAG_FILE) | $(TST_BUILD_DIR)
+$(TST_BUILD_DIR)/%.o: $(TST_SOURCE_DIR)/%.c | $(TST_BUILD_DIR)
 	$(info Building the $@ object file...)
 	@$(CC) $(CFLAGS) -c $< $(TST_FLAG) -o $@
 
 
-%.test: ./test
+%.test: ./run.test
 	$(info Runing $*-test with valgrind...)
-	@CK_RUN_SUITE="$*" CK_FORK=no valgrind --tool=memcheck --leak-check=full --track-origins=yes ./test
+	@CK_RUN_SUITE="$*" CK_FORK=no valgrind --tool=memcheck --leak-check=full --track-origins=yes ./run.test
 
 # =============================================================================
 # Assemble Coverage Data to Web-Page
 # =============================================================================
-gcov_report: $(COV_FRONT_DIR) test
+gcov_report: run.test | $(COV_FRONT_DIR)
 	$(info Generating coverage report...)
-	@lcov --test-name "s21_string" -v --output-file $(COV_REPORT_DIR)/coverage.info --capture --directory $(OBJ_BUILD_DIR)
+	@lcov --test-name "s21_matrix" -v --output-file $(COV_REPORT_DIR)/coverage.info --capture --directory $(OBJ_BUILD_DIR)
 	@genhtml $(COV_REPORT_DIR)/coverage.info --show-navigation --dark-mode --legend --output-directory $(COV_FRONT_DIR)
 	@$(OPENCMD) $(COV_FRONT_DIR)/index.html || true
 
@@ -150,11 +151,11 @@ release: $(LIBRARY)
 
 gdb: test
 	$(info Running with gdb...)
-	@CK_FORK=no gdb ./test
+	@CK_FORK=no gdb ./run.test
 
 clean:
 	$(info Cleaning the build artifacts...)
-	@rm -rf $(OBJ_BUILD) $(LIBRARY) ./test ./*.test ./coverage ./*.log
+	@rm -rf $(OBJ_BUILD) $(LIBRARY) ./*.test ./coverage ./*.log
 
 rebuild: clean all
 
@@ -163,11 +164,11 @@ rebuild: clean all
 # =============================================================================
 $(OBJ_BUILD_DIR):
 	$(info Creating a directory for objective file...)
-	@mkdir -p build $(OBJ_BUILD_DIR)
+	@mkdir -p $(OBJ_BUILD) $(OBJ_BUILD_DIR)
 
 $(TST_BUILD_DIR):
 	$(info Creating a directory for test-objective file...)
-	@mkdir -p build $(TST_BUILD_DIR)
+	@mkdir -p $(OBJ_BUILD) $(TST_BUILD_DIR)
 
 $(COV_FRONT_DIR):
 	$(info Creating a direcory for coverage report...)

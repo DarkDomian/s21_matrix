@@ -38,31 +38,42 @@ START_TEST(test_matrix_data_integrity) {
 
   // verify matrix can be filled with data
   double test_value = 1.5;
-  for (int i = 0; i < A.rows; i++) {
-    for (int j = 0; j < A.columns; j++) {
+  for (int i = 0; i < A.rows; ++i) {
+    for (int j = 0; j < A.columns; ++j) {
       A.matrix[i][j] = test_value + i * A.columns + j;
     }
   }
 
   // verify data was correctly stored and can be retrieved
-  for (int i = 0; i < A.rows; i++) {
-    for (int j = 0; j < A.columns; j++) {
+  for (int i = 0; i < A.rows; ++i) {
+    for (int j = 0; j < A.columns; ++j) {
       double expected = test_value + i * A.columns + j;
       ck_assert_double_eq(A.matrix[i][j], expected);
     }
   }
 
   // Test 6: Verify data persistence (write/read consistency)
-  for (int i = 0; i < A.rows; i++) {
-    for (int j = 0; j < A.columns; j++) {
+  for (int i = 0; i < A.rows; ++i) {
+    for (int j = 0; j < A.columns; ++j) {
       A.matrix[i][j] *= 2.0;
     }
   }
 
   // check values was changed correctly
-  for (int i = 0; i < A.rows; i++) {
-    for (int j = 0; j < A.columns; j++) {
+  for (int i = 0; i < A.rows; ++i) {
+    for (int j = 0; j < A.columns; ++j) {
       double expected = (test_value + i * A.columns + j) * 2.0;
+      ck_assert_double_eq(A.matrix[i][j], expected);
+    }
+  }
+
+  for (int i = 0; i < A.rows * A.columns; ++i) {
+    A.matrix[0][i] /= 1.5;
+  }
+
+  for (int i = 0; i < A.rows; ++i) {
+    for (int j = 0; j < A.columns; ++j) {
+      double expected = ((test_value + i * A.columns + j) * 2.0) / 1.5;
       ck_assert_double_eq(A.matrix[i][j], expected);
     }
   }

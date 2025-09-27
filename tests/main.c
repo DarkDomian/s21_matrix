@@ -11,8 +11,16 @@ int main(void) {
   int number_failed;
   SRunner *sr = srunner_create(test_remove_matrix());
 
-  //  TODO(all): add after comment your suits...
   srunner_add_suite(sr, test_create_matrix());
+  srunner_add_suite(sr, test_eq_matrix());
+  srunner_add_suite(sr, test_sum_matrix());
+  srunner_add_suite(sr, test_sub_matrix());
+  srunner_add_suite(sr, test_mult_number());
+  srunner_add_suite(sr, test_mult_matrix());
+  srunner_add_suite(sr, test_transpose());
+  srunner_add_suite(sr, test_inverse_matrix());
+  srunner_add_suite(sr, test_determinant());
+  srunner_add_suite(sr, test_calc_complements());
 
   //  Check for CK_RUN_SUITE and set a custom log file
   const char *suite = getenv("CK_RUN_SUITE");
