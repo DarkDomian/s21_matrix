@@ -47,7 +47,7 @@ START_TEST(test_matrix_data_integrity) {
   // verify data was correctly stored and can be retrieved
   for (int i = 0; i < A.rows; ++i) {
     for (int j = 0; j < A.columns; ++j) {
-      double expected = test_value + i * A.columns + j;
+      double expected = test_value + (i * A.columns) + j;
       ck_assert_double_eq(A.matrix[i][j], expected);
     }
   }
