@@ -50,8 +50,8 @@ typedef struct matrix_struct {
  * @param rows Number of rows to initialize
  * @param columns Number of columns to initialize
  * @param result Pointer to matrix structure where the result will be stored
- * @return S21_SUCCESS if matrix was initialized successfully, S21_ERROR if any
- * error occurred
+ * @return `S21_SUCCESS` if matrix was initialized successfully, `S21_ERROR` if
+ * any error occurred
  *
  * @note The function allocates memory for the matrix. Use s21_remove_matrix to
  * free the memory.
