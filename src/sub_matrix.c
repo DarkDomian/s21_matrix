@@ -3,10 +3,13 @@
 int s21_sub_matrix(matrix_t *A, matrix_t *B, matrix_t *result) {
   int res = S21_SUCCESS;
 
-  if (!res) {
-    result->rows = A->rows * B->columns;
-    result->columns = A->columns * B->rows;
+  if ((A->rows != B->rows) || (A->columns != B->columns)) {
+    res = S21_CALCERR;
   }
 
+  if (!res && !(res = s21_create_matrix(A->rows, A->columns, result))) {
+    for (int i = 0; i < A->rows * A->columns; ++i)
+      result->matrix[0][i] = A->matrix[0][i] - B->matrix[0][i];
+  }
   return res;
 }
