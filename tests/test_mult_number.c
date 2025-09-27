@@ -33,7 +33,7 @@ START_TEST(test_mult_by_zero) {
   matrix_t A = {.rows = 0, .columns = 0, .matrix = NULL};
   matrix_t C = {.rows = 0, .columns = 0, .matrix = NULL};
 
-  s21_create_matrix(9, 8, &A);
+  s21_create_matrix(3, 2, &A);
 
   double digit_a[9] = {10.235802,  71.790123,  0.001233,
                        199.999998, -16.900000, 5.246913};
@@ -73,7 +73,7 @@ START_TEST(test_mult_hard_numbers) {
   for (int i = 0; i < A.rows * A.columns; ++i)
     ck_assert_double_eq_tol(C.matrix[0][i], *ptr_digit++, 1e-6);
 
-#if 0
+  s21_remove_matrix(&C);
   // SECOND
   double digit_b[9] = {-2.109876, 77.777777, -0.000001,
                        99.999999, -8.450000, -9.876543};
@@ -89,9 +89,10 @@ START_TEST(test_mult_hard_numbers) {
   for (int i = 0; i < A.rows * A.columns; ++i)
     ck_assert_double_eq_tol(C.matrix[0][i], *ptr_digit++, 1e-6);
 
+  s21_remove_matrix(&C);
   // THIRD
   double digit_c[9] = {10.235802,  71.790123,  0.001233,
-                          199.999998, -16.900000, 5.246913};
+                       199.999998, -16.900000, 5.246913};
   for (int i = 0; i < 9; ++i) {
     expected[i] = digit_c[i] * -100.010001;
   }
@@ -103,7 +104,6 @@ START_TEST(test_mult_hard_numbers) {
   ptr_digit = expected;
   for (int i = 0; i < A.rows * A.columns; ++i)
     ck_assert_double_eq_tol(C.matrix[0][i], *ptr_digit++, 1e-6);
-#endif
 
   s21_remove_matrix(&A);
   s21_remove_matrix(&C);
