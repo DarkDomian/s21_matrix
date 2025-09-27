@@ -47,6 +47,8 @@ endif
 # =============================================================================
 INCLUDE			::=		./include
 
+OBJ_BUILD		::=		./build
+
 LIB_SOURCE_DIR	::=		./src
 OBJ_BUILD_DIR	::=		./build/obj
 
@@ -56,14 +58,11 @@ TST_BUILD_DIR	::=		./build/test
 COV_REPORT_DIR	::=		./coverage
 COV_FRONT_DIR	::=		./coverage/web
 
-STAMP			::=		./build/cflags.stamp
-
 # =============================================================================
 # Source and Object Files
 # =============================================================================
 LIB_SOURCE		=		$(wildcard $(LIB_SOURCE_DIR)/*.c)
 LIB_OBJECTS		=		$(patsubst $(LIB_SOURCE_DIR)/%.c, $(OBJ_BUILD_DIR)/%.o, $(LIB_SOURCE))
-
 
 TST_SOURCE		=		$(wildcard $(TST_SOURCE_DIR)/*.c)
 TST_OBJECTS		=		$(patsubst $(TST_SOURCE_DIR)/%.c, $(TST_BUILD_DIR)/%.o, $(TST_SOURCE))
@@ -71,61 +70,24 @@ TST_OBJECTS		=		$(patsubst $(TST_SOURCE_DIR)/%.c, $(TST_BUILD_DIR)/%.o, $(TST_SO
 # =============================================================================
 # Main Targets
 # =============================================================================
-LIBRARY			::=		s21_decimal.a
+LIBRARY			::=		s21_matrix.a
 
-.PHONY: all debug release style_format style_check gcov_report clean rebuild gdb help
-
-# =============================================================================
-# Flag Change Detection
-# =============================================================================
-FLAG_FILE 		::=		./build/cflags.current
-LAST_CFLAGS 	::= 	$(shell cat $(FLAG_FILE) 2>/dev/null)
-
-# Only proceed with rebuild if flags have changed or flag file doesn't exist
-ifneq ($(CFLAGS),$(LAST_CFLAGS))
-    .PHONY: FORCE
-    FORCE:
-    $(shell mkdir -p ./build && echo "$(CFLAGS)" > $(FLAG_FILE))
-    $(info Compiler flags changed - forcing rebuild...)
-    REBUILD 	::= 	FORCE
-else
-    REBUILD 	::=
-endif
+.PHONY: all debug release style_format style_check gcov_report clean rebuild gdb
 
 # =============================================================================
 # All(general) and Help targets
 # =============================================================================
-all: ${LIBRARY}
-
-help:
-	@printf "TARGETS:\n"
-	@printf "\t%-20s %s\n" "all" "Build and run tests with style check"
-	@printf "\t%-20s %s\n" "test" "Compile and run all tests"
-	@printf "\t%-20s %s\n" "release" "Build optimized release version"
-	@printf "\t%-20s %s\n" "gdb" "Build debug version and run with gdb"
-	@printf "\t%-20s %s\n" "style_format" "Format code with clang-format"
-	@printf "\t%-20s %s\n" "style_check" "Check code style and run cppcheck"
-	@printf "\t%-20s %s\n" "gcov_report" "Generate coverage report"
-	@printf "\t%-20s %s\n" "clean" "Remove all build artifacts"
-	@printf "\t%-20s %s\n" "rebuild" "Clean and rebuild everything"
-	@printf "\t%-20s %s\n" "help" "Show this help message"
-	@printf "\n"
-	@printf "DIRECTORIES:\n"
-	@printf "\t%-20s %s\n" "$(COV_REPORT_DIR)" "directory with coverage info"
-	@printf "\t%-20s %s\n" "$(COV_FRONT_DIR)" "directory with coverage static web-page"
-	@printf "\t%-20s %s\n" "$(OBJ_BUILD_DIR)" "directory with object files"
-	@printf "\t%-20s %s\n" "$(TST_BUILD_DIR)" "directory with test object files"
-	@printf "\t%-20s %s\n" "$(INCLUDE)" "directory with header files"
+all: style_check gcov_report
 
 # =============================================================================
 # Build Rules
 # =============================================================================
-$(LIBRARY): $(LIB_OBJECTS) $(REBUILD)
+$(LIBRARY): $(LIB_OBJECTS)
 	$(info Assembling all together to static lib...)
 	@ar rcs $@ $(LIB_OBJECTS)
 	@ranlib $@
 
-$(OBJ_BUILD_DIR)/%.o: $(LIB_SOURCE_DIR)/%.c $(FLAG_FILE) | $(OBJ_BUILD_DIR)
+$(OBJ_BUILD_DIR)/%.o: $(LIB_SOURCE_DIR)/%.c | $(OBJ_BUILD_DIR)
 	$(info Building the $@ object file...)
 	@$(CC) $(CFLAGS) -c $< -o $@
 
@@ -134,24 +96,24 @@ $(OBJ_BUILD_DIR)/%.o: $(LIB_SOURCE_DIR)/%.c $(FLAG_FILE) | $(OBJ_BUILD_DIR)
 # =============================================================================
 test: $(TST_OBJECTS) $(LIBRARY)
 	$(info Compile tests and running with valgrind...)
-	@$(CC) $(CFLAGS) $(TST_OBJECTS) $(LIBRARY) $(TST_FLAG) -o $@
-	@CK_FORK=no valgrind --tool=memcheck --leak-check=full --track-origins=yes ./test
+	@$(CC) $(CFLAGS) $(TST_OBJECTS) $(LIBRARY) $(TST_FLAG) -o run.test
+	@CK_FORK=no valgrind --tool=memcheck --leak-check=full --track-origins=yes ./run.test
 
-$(TST_BUILD_DIR)/%.o: $(TST_SOURCE_DIR)/%.c $(FLAG_FILE) | $(TST_BUILD_DIR)
+$(TST_BUILD_DIR)/%.o: $(TST_SOURCE_DIR)/%.c | $(TST_BUILD_DIR)
 	$(info Building the $@ object file...)
 	@$(CC) $(CFLAGS) -c $< $(TST_FLAG) -o $@
 
 
-%.test: ./test
+%.test: ./run.test
 	$(info Runing $*-test with valgrind...)
-	@CK_RUN_SUITE="$*" CK_FORK=no valgrind --tool=memcheck --leak-check=full --track-origins=yes ./test
+	@CK_RUN_SUITE="$*" CK_FORK=no valgrind --tool=memcheck --leak-check=full --track-origins=yes ./run.test
 
 # =============================================================================
 # Assemble Coverage Data to Web-Page
 # =============================================================================
-gcov_report: $(COV_FRONT_DIR) test
+gcov_report: run.test | $(COV_FRONT_DIR)
 	$(info Generating coverage report...)
-	@lcov --test-name "s21_string" -v --output-file $(COV_REPORT_DIR)/coverage.info --capture --directory $(OBJ_BUILD_DIR)
+	@lcov --test-name "s21_matrix" -v --output-file $(COV_REPORT_DIR)/coverage.info --capture --directory $(OBJ_BUILD_DIR)
 	@genhtml $(COV_REPORT_DIR)/coverage.info --show-navigation --dark-mode --legend --output-directory $(COV_FRONT_DIR)
 	@$(OPENCMD) $(COV_FRONT_DIR)/index.html || true
 
@@ -189,11 +151,11 @@ release: $(LIBRARY)
 
 gdb: test
 	$(info Running with gdb...)
-	@CK_FORK=no gdb ./test
+	@CK_FORK=no gdb ./run.test
 
 clean:
 	$(info Cleaning the build artifacts...)
-	@rm -rf $(OBJ_BUILD_DIR) $(TST_BUILD_DIR) $(LIBRARY) ./test ./*.test ./coverage ./*.log ./s21_decimal.h
+	@rm -rf $(OBJ_BUILD) $(LIBRARY) ./*.test ./coverage ./*.log
 
 rebuild: clean all
 
@@ -202,11 +164,11 @@ rebuild: clean all
 # =============================================================================
 $(OBJ_BUILD_DIR):
 	$(info Creating a directory for objective file...)
-	@mkdir -p $(OBJ_BUILD_DIR)
+	@mkdir -p $(OBJ_BUILD) $(OBJ_BUILD_DIR)
 
 $(TST_BUILD_DIR):
 	$(info Creating a directory for test-objective file...)
-	@mkdir -p $(TST_BUILD_DIR)
+	@mkdir -p $(OBJ_BUILD) $(TST_BUILD_DIR)
 
 $(COV_FRONT_DIR):
 	$(info Creating a direcory for coverage report...)

@@ -1,16 +1,24 @@
 #ifndef S21_MATRIX_H
 #define S21_MATRIX_H
 
+#include <stdlib.h>
+
 /*======================================================
     ERRORS CODE
 ========================================================*/
-#define S21_SUCCESS 0
-#define S21_ERROR 1 // default error code or incorrect matrix
-#define S21_CALCERR 2 // calculation error (mismatched matrix sizes; matrix for which calculations cannot be performed, etc.)
+
+#define S21_SUCCESS 0  // success code. realy good to be returned
+#define S21_ERROR 1    // default error code or incorrect matrix
+/**
+ * @brief calculation error (musmatched matrix sizes; matrix for which
+ * calculations cannot be performed, etc)
+ */
+#define S21_CALCERR 2
 
 /*======================================================
     BOOL CODE
 ========================================================*/
+
 #define S21_TRUE 1
 #define S21_FALSE 0
 
@@ -20,21 +28,21 @@
 
 /**
  * @brief Structure to store a pointer to a matrix and its meta-data.
- * 
+ *
  * This structure contains the matrix data and its dimensions.
- * 
+ *
  * @param matrix Pointer to a 2D array representing the matrix.
  * @param rows Number of rows in the matrix.
  * @param columns Number of columns in the matrix.
  */
 typedef struct matrix_struct {
-    double** matrix; /**< Pointer to a 2D array representing the matrix. */
-    int rows;        /**< Number of rows in the matrix. */
-    int columns;     /**< Number of columns in the matrix. */
+  double **matrix; /**< Pointer to a 2D array representing the matrix. */
+  int rows;        /**< Number of rows in the matrix. */
+  int columns;     /**< Number of columns in the matrix. */
 } matrix_t;
 
 /*======================================================
-    CONSTRUCTOR AND DESTRUCTOR
+    CORE OPERATIONS
 ========================================================*/
 
 /**
@@ -42,17 +50,20 @@ typedef struct matrix_struct {
  * @param rows Number of rows to initialize
  * @param columns Number of columns to initialize
  * @param result Pointer to matrix structure where the result will be stored
- * @return S21_SUCCESS if matrix was initialized successfully, S21_ERROR if any error occurred
- * 
- * @note The function allocates memory for the matrix. Use s21_remove_matrix to free the memory.
+ * @return S21_SUCCESS if matrix was initialized successfully, S21_ERROR if any
+ * error occurred
+ *
+ * @note The function allocates memory for the matrix. Use s21_remove_matrix to
+ * free the memory.
  */
 int s21_create_matrix(int rows, int columns, matrix_t *result);
 
 /**
  * @brief Clean matrix memory
  * @param A Pointer to matrix to remove
- * 
- * @note This function frees all memory allocated for the matrix and sets pointers to NULL.
+ *
+ * @note This function frees all memory allocated for the matrix and sets
+ * pointers to NULL.
  */
 void s21_remove_matrix(matrix_t *A);
 
@@ -61,20 +72,24 @@ void s21_remove_matrix(matrix_t *A);
  * @param A Pointer to first matrix
  * @param B Pointer to second matrix
  * @return `S21_TRUE` if matrices are equal, `S21_FALSE` if not
- * 
- * @note Matrices are considered equal if they have the same dimensions and 
+ *
+ * @note Matrices are considered equal if they have the same dimensions and
  * corresponding elements are identical (compared up to 6 decimal places).
  */
 int s21_eq_matrix(matrix_t *A, matrix_t *B);
+
+/*======================================================
+    ARITHMETIC OPERATIONS
+========================================================*/
 
 /**
  * @brief Add two matrices
  * @param A Pointer to first matrix
  * @param B Pointer to second matrix
  * @param result Pointer to matrix structure where the result will be stored
- * @return `S21_SUCCESS` if operation successful, `S21_ERROR` if matrices are incorrect,
- *         `S21_CALCERR` if matrix sizes don't match for addition
- * 
+ * @return `S21_SUCCESS` if operation successful, `S21_ERROR` if matrices are
+ * incorrect, `S21_CALCERR` if matrix sizes don't match for addition
+ *
  * @note Performs element-wise addition: `result[i][j] = A[i][j] + B[i][j]`
  */
 int s21_sum_matrix(matrix_t *A, matrix_t *B, matrix_t *result);
@@ -84,9 +99,9 @@ int s21_sum_matrix(matrix_t *A, matrix_t *B, matrix_t *result);
  * @param A Pointer to first matrix
  * @param B Pointer to second matrix
  * @param result Pointer to matrix structure where the result will be stored
- * @return `S21_SUCCESS` if operation successful, `S21_ERROR` if matrices are incorrect,
- *         `S21_CALCERR` if matrix sizes don't match for subtraction
- * 
+ * @return `S21_SUCCESS` if operation successful, `S21_ERROR` if matrices are
+ * incorrect, `S21_CALCERR` if matrix sizes don't match for subtraction
+ *
  * @note Performs element-wise subtraction: `result[i][j] = A[i][j] - B[i][j]`
  */
 int s21_sub_matrix(matrix_t *A, matrix_t *B, matrix_t *result);
@@ -96,8 +111,9 @@ int s21_sub_matrix(matrix_t *A, matrix_t *B, matrix_t *result);
  * @param A Pointer to source matrix
  * @param number Scalar value to multiply by
  * @param result Pointer to matrix structure where the result will be stored
- * @return `S21_SUCCESS` if operation successful, `S21_ERROR` if matrix is incorrect
- * 
+ * @return `S21_SUCCESS` if operation successful, `S21_ERROR` if matrix is
+ * incorrect
+ *
  * @note Performs scalar multiplication: `result[i][j] = A[i][j] * number`
  */
 int s21_mult_number(matrix_t *A, double number, matrix_t *result);
@@ -107,57 +123,68 @@ int s21_mult_number(matrix_t *A, double number, matrix_t *result);
  * @param A Pointer to first matrix
  * @param B Pointer to second matrix
  * @param result Pointer to matrix structure where the result will be stored
- * @return `S21_SUCCESS` if operation successful, `S21_ERROR` if matrices are incorrect,
- *         `S21_CALCERR` if matrix dimensions are incompatible for multiplication
- * 
+ * @return `S21_SUCCESS` if operation successful, `S21_ERROR` if matrices are
+ * incorrect, `S21_CALCERR` if matrix dimensions are incompatible for
+ * multiplication
+ *
  * @note Number of columns in `A` must equal number of rows in `B`.
  * Result matrix dimensions will be: `rows = A->rows`, `columns = B->columns`
  */
 int s21_mult_matrix(matrix_t *A, matrix_t *B, matrix_t *result);
 
+/*======================================================
+    LINEAR ALGEBRA OPERATIONS
+========================================================*/
+
 /**
  * @brief Transpose a matrix
  * @param A Pointer to source matrix
  * @param result Pointer to matrix structure where the result will be stored
- * @return `S21_SUCCESS` if operation successful, `S21_ERROR` if matrix is incorrect
- * 
+ * @return `S21_SUCCESS` if operation successful, `S21_ERROR` if matrix is
+ * incorrect
+ *
  * @note Transpose operation swaps rows with columns: `result[i][j] = A[j][i]`
  */
 int s21_transpose(matrix_t *A, matrix_t *result);
 
 /**
- * @brief Calculate matrix of algebraic complements (cofactor matrix)
+ * @brief Calculate inverse of a matrix
  * @param A Pointer to source matrix
  * @param result Pointer to matrix structure where the result will be stored
- * @return `S21_SUCCESS` if operation successful, `S21_ERROR` if matrix is incorrect,
- *         `S21_CALCERR` if matrix is not square
- * 
- * @note The source matrix must be square. Algebraic complement is calculated as
- * `C(i,j) = (-1)^(i+j) * M(i,j)`, where `M(i,j)` is the minor of element `A[i][j]`
+ * @return `S21_SUCCESS` if operation successful, `S21_ERROR` if matrix is
+ * incorrect, `S21_CALCERR` if matrix is not square or determinant is zero
+ *
+ * @note The source matrix must be square and have non-zero determinant.
+ * Inverse is calculated as: `A^(-1) = (1/det(A)) * adjugate(A)^T`
  */
-int s21_calc_complements(matrix_t *A, matrix_t *result);
+int s21_inverse_matrix(matrix_t *A, matrix_t *result);
 
 /**
  * @brief Calculate determinant of a matrix
  * @param A Pointer to source matrix
  * @param result Pointer to double where the determinant value will be stored
- * @return `S21_SUCCESS` if operation successful, `S21_ERROR` if matrix is incorrect,
- *         `S21_CALCERR` if matrix is not square
- * 
+ * @return `S21_SUCCESS` if operation successful, `S21_ERROR` if matrix is
+ * incorrect, `S21_CALCERR` if matrix is not square
+ *
  * @note The source matrix must be square. Uses recursive Laplace expansion.
  */
 int s21_determinant(matrix_t *A, double *result);
 
+/*======================================================
+    AUXILIARY OPERATIONS
+========================================================*/
+
 /**
- * @brief Calculate inverse of a matrix
+ * @brief Calculate matrix of algebraic complements (cofactor matrix)
  * @param A Pointer to source matrix
  * @param result Pointer to matrix structure where the result will be stored
- * @return `S21_SUCCESS` if operation successful, `S21_ERROR` if matrix is incorrect,
- *         `S21_CALCERR` if matrix is not square or determinant is zero
- * 
- * @note The source matrix must be square and have non-zero determinant.
- * Inverse is calculated as: `A^(-1) = (1/det(A)) * adjugate(A)^T`
+ * @return `S21_SUCCESS` if operation successful, `S21_ERROR` if matrix is
+ * incorrect, `S21_CALCERR` if matrix is not square
+ *
+ * @note The source matrix must be square. Algebraic complement is calculated as
+ * `C(i,j) = (-1)^(i+j) * M(i,j)`, where `M(i,j)` is the minor of element
+ * `A[i][j]`
  */
-int s21_inverse_matrix(matrix_t *A, matrix_t *result);
+int s21_calc_complements(matrix_t *A, matrix_t *result);
 
 #endif  // S21_MATRIX_H

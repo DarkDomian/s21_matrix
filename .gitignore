@@ -1,4 +1,5 @@
 build/
 *.log
-test
+run.test
 s21_matrix.a
+*.out
