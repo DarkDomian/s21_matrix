@@ -201,8 +201,36 @@ int s21_calc_complements(matrix_t *A, matrix_t *result);
  * @note Two matrices have equal dimensions if they have the same number of rows
  * and the same number of columns. This is a prerequisite for many matrix
  * operations like addition and subtraction.
- * @note @see Implementation can be found in `eq_matrix.c`
+ *
+ * @see Implementation can be found in `eq_matrix.c`
  */
 int _has_equal_demensions(matrix_t *A, matrix_t *B);
+
+/**
+ * @brief Extract a minor matrix by excluding specified row and column
+ * @param A Pointer to source matrix
+ * @param excluded_row Index of row to exclude (0-based)
+ * @param excluded_col Index of column to exclude (0-based)
+ * @param result Pointer to matrix structure where the minor will be stored
+ * @return `S21_SUCCESS` if operation successful, `S21_ERROR` if matrix is
+ * incorrect or indices are invalid, `S21_CALCERR` if matrix is too small
+ *
+ * @note The minor matrix is obtained by removing the specified row and column
+ * from the original matrix. The resulting matrix has dimensions (n-1) x (m-1).
+ * @note This is an internal helper function used for determinant calculation
+ * and cofactor matrix computation.
+ * @note The source matrix must be at least 2x2 to create a valid minor.
+ * @note Indices must be within bounds: `0 <= excluded_row < rows` and
+ * `0 <= excluded_col < columns`
+ *
+ * @see Used by `s21_determinant()` and `s21_calc_complements()`. Implementation
+ * can be found in `determinant.c`
+ */
+int _get_minor(matrix_t *A, matrix_t *result);
+
+/**
+ * @return S21_TRUE if matrix is square and S21_FALSE otherwise
+ */
+int _matrix_is_square(matrix_t *A);
 
 #endif  // S21_MATRIX_H
