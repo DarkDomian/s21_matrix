@@ -226,7 +226,8 @@ int _has_equal_demensions(matrix_t *A, matrix_t *B);
  * @see Used by `s21_determinant()` and `s21_calc_complements()`. Implementation
  * can be found in `determinant.c`
  */
-int _get_minor(matrix_t *A, matrix_t *result);
+int _get_minor(matrix_t *A, int excluded_row, int excluded_col,
+               matrix_t *result);
 
 /**
  * @return S21_TRUE if matrix is square and S21_FALSE otherwise
