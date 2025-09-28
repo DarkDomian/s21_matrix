@@ -50,8 +50,8 @@ typedef struct matrix_struct {
  * @param rows Number of rows to initialize
  * @param columns Number of columns to initialize
  * @param result Pointer to matrix structure where the result will be stored
- * @return S21_SUCCESS if matrix was initialized successfully, S21_ERROR if any
- * error occurred
+ * @return `S21_SUCCESS` if matrix was initialized successfully, `S21_ERROR` if
+ * any error occurred
  *
  * @note The function allocates memory for the matrix. Use s21_remove_matrix to
  * free the memory.
@@ -186,5 +186,23 @@ int s21_determinant(matrix_t *A, double *result);
  * `A[i][j]`
  */
 int s21_calc_complements(matrix_t *A, matrix_t *result);
+
+/*======================================================
+    HELPERS
+========================================================*/
+
+/**
+ * @brief Check if two matrices have equal dimensions
+ * @param A Pointer to first matrix
+ * @param B Pointer to second matrix
+ * @return `S21_TRUE` if matrices have same dimensions, `S21_FALSE` otherwise
+ * @see Implementation can be found in `eq_matrix.c`
+ *
+ * @note Two matrices have equal dimensions if they have the same number of rows
+ * and the same number of columns. This is a prerequisite for many matrix
+ * operations like addition and subtraction.
+ * @note @see Implementation can be found in `eq_matrix.c`
+ */
+int _has_equal_demensions(matrix_t *A, matrix_t *B);
 
 #endif  // S21_MATRIX_H

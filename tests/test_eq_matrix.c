@@ -9,6 +9,21 @@ START_TEST(test_same_pointer) {
 }
 END_TEST
 
+START_TEST(test_different_dimensions) {
+  matrix_t A = {.rows = 4, .columns = 5, .matrix = NULL};
+  matrix_t B = {.rows = 4, .columns = 6, .matrix = NULL};
+
+  ck_assert_int_eq(s21_eq_matrix(&A, &B), S21_FALSE);
+
+  B.columns = 6;
+  A.rows = 3;
+
+  ck_assert_int_eq(s21_eq_matrix(&A, &B), S21_FALSE);
+
+  s21_remove_matrix(&A);
+  s21_remove_matrix(&B);
+}
+
 START_TEST(test_equal_matrix) {
   matrix_t A = {.rows = 0, .columns = 0, .matrix = NULL};
   matrix_t B = {.rows = 0, .columns = 0, .matrix = NULL};
@@ -53,6 +68,7 @@ Suite* test_eq_matrix(void) {
   Suite* ps = suite_create("equal");
   TCase* tc = tcase_create("core");
 
+  tcase_add_test(tc, test_different_dimensions);
   tcase_add_test(tc, test_same_pointer);
   tcase_add_test(tc, test_equal_matrix);
   tcase_add_test(tc, test_different_matrix);

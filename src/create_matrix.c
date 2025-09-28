@@ -29,6 +29,9 @@ int s21_create_matrix(int rows, int columns, matrix_t* result) {
       result->matrix[i] = ptr + columns * i;
     }
 
+    // initialize memory to zeros
+    for (int i = 0; i < rows * columns; ++i) result->matrix[0][i] = 0;
+
 #if 0
     for (int i = 0; i < rows; ++i)
       result->matrix[i] = (double*)result->matrix[rows] + columns * i;
