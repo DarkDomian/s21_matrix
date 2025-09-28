@@ -187,4 +187,22 @@ int s21_determinant(matrix_t *A, double *result);
  */
 int s21_calc_complements(matrix_t *A, matrix_t *result);
 
+/*======================================================
+    HELPERS
+========================================================*/
+
+/**
+ * @brief Check if two matrices have equal dimensions
+ * @param A Pointer to first matrix
+ * @param B Pointer to second matrix
+ * @return `S21_TRUE` if matrices have same dimensions, `S21_FALSE` otherwise
+ * @see Implementation can be found in `eq_matrix.c`
+ *
+ * @note Two matrices have equal dimensions if they have the same number of rows
+ * and the same number of columns. This is a prerequisite for many matrix
+ * operations like addition and subtraction.
+ * @note @see Implementation can be found in `eq_matrix.c`
+ */
+int _has_equal_demensions(matrix_t *A, matrix_t *B);
+
 #endif  // S21_MATRIX_H
