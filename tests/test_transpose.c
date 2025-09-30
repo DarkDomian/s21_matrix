@@ -8,7 +8,7 @@ START_TEST(test_transpose_is_flip) {
   s21_create_matrix(3, 1, &A);
   double digit_a[3] = {1, 4, 2};
 
-  double* ptr_digit = digit_a;
+  const double* ptr_digit = digit_a;
   for (int i = 0; i < A.rows * A.columns; ++i) A.matrix[0][i] = *ptr_digit++;
 
   ck_assert_int_eq(s21_transpose(&A, &B), S21_SUCCESS);

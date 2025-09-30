@@ -1,6 +1,6 @@
 #include "../include/s21_matrix.h"
 
-int _matrix_is_square(matrix_t *A) {
+int _matrix_is_square(const matrix_t *A) {
   if (!_is_valid_source(A)) return S21_FALSE;
   return (A->columns == A->rows ? S21_TRUE : S21_FALSE);
 }

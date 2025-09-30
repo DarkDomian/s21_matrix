@@ -3,7 +3,7 @@
 
 #include "../include/s21_matrix.h"
 
-int _has_equal_demensions(matrix_t *A, matrix_t *B) {
+int _has_equal_demensions(const matrix_t *A, const matrix_t *B) {
   int res = S21_TRUE;
   if ((A->rows != B->rows) || (A->columns != B->columns)) {
     res = S21_FALSE;
@@ -11,7 +11,7 @@ int _has_equal_demensions(matrix_t *A, matrix_t *B) {
   return res;
 }
 
-int s21_eq_matrix(matrix_t *A, matrix_t *B) {
+int s21_eq_matrix(const matrix_t *A, const matrix_t *B) {
   int res = S21_TRUE;
 
   if (!_is_valid_source(A) || !_is_valid_source(B)) res = S21_FALSE;

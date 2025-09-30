@@ -48,7 +48,7 @@ START_TEST(test_determ_matrix_3_x_3) {
 
   double digit_a[9] = {6, -1, 7, 10, 5, 3, 4, -8, 9};
 
-  double* ptr_digit = digit_a;
+  const double* ptr_digit = digit_a;
   for (int i = 0; i < A.rows * A.columns; ++i) A.matrix[0][i] = *ptr_digit++;
 
   double determ = 0;
@@ -67,7 +67,7 @@ START_TEST(test_determ_matrix_4_x_4) {
   double digits_a[] = {2.5,  -1.3, 0.8, 3.1,  0.7, 1.9,  -2.4, 0.5,
                        -1.2, 3.1,  1.6, -0.9, 2.8, -0.4, 1.1,  2.3};
 
-  double* ptr_digit = digits_a;
+  const double* ptr_digit = digits_a;
   for (int i = 0; i < A.rows * A.columns; ++i) A.matrix[0][i] = *ptr_digit++;
 
   double determinant = 0.0;
@@ -87,7 +87,7 @@ START_TEST(test_determ_matrix_5_x_5) {
                        0.6, -0.8, 1.6, 2.2, -1.9, 3.1, 1.7, -2.1, 0.5,
                        1.8, -1.7, 0.3, 2.8, -1.4, 0.9, 2.5};
 
-  double* ptr_digit = digits_a;
+  const double* ptr_digit = digits_a;
   for (int i = 0; i < A.rows * A.columns; ++i) A.matrix[0][i] = *ptr_digit++;
 
   double determinant = 0.0;

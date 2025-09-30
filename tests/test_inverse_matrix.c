@@ -30,7 +30,7 @@ START_TEST(test_inverse_zero_determ) {
 
   double digit_a[9] = {2, -7, -2, 7};
 
-  double* ptr_digit = digit_a;
+  const double* ptr_digit = digit_a;
   for (int i = 0; i < A.rows * A.columns; ++i) A.matrix[0][i] = *ptr_digit++;
 
   ck_assert_int_eq(s21_inverse_matrix(&A, &B), S21_CALCERR);

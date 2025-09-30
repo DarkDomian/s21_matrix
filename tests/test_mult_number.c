@@ -38,7 +38,7 @@ START_TEST(test_mult_by_zero) {
   double digit_a[9] = {10.235802,  71.790123,  0.001233,
                        199.999998, -16.900000, 5.246913};
 
-  double* ptr_digit = digit_a;
+  const double* ptr_digit = digit_a;
   for (int i = 0; i < A.rows * A.columns; ++i) A.matrix[0][i] = *ptr_digit++;
 
   ck_assert_int_eq(s21_mult_number(&A, 0, &C), S21_SUCCESS);
