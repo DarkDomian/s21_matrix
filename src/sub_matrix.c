@@ -3,6 +3,7 @@
 int s21_sub_matrix(matrix_t *A, matrix_t *B, matrix_t *result) {
   int res = S21_SUCCESS;
 
+  if (!_is_valid_source(A) || !_is_valid_source(B)) res = S21_ERROR;
   if (!_has_equal_demensions(A, B)) res = S21_CALCERR;
 
   if (!res && !(res = s21_create_matrix(A->rows, A->columns, result))) {

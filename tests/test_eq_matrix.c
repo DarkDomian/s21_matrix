@@ -4,6 +4,8 @@
 START_TEST(test_same_pointer) {
   matrix_t A = {.rows = 0, .columns = 0, .matrix = NULL};
 
+  s21_create_matrix(3, 3, &A);
+
   ck_assert_int_eq(s21_eq_matrix(&A, &A), S21_TRUE);
   s21_remove_matrix(&A);
 }

@@ -236,4 +236,11 @@ int _get_minor(matrix_t *A, int excluded_row, int excluded_col,
  */
 int _matrix_is_square(matrix_t *A);
 
+/**
+ * @brief check does the matrix are good
+ *
+ * @see implemented in `create_matrix.c`
+ */
+int _is_valid_source(const matrix_t *A);
+
 #endif  // S21_MATRIX_H

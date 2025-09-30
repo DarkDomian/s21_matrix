@@ -6,7 +6,13 @@ START_TEST(test_wrong_dimensions_mult_m) {
   matrix_t B = {.rows = 4, .columns = 3, .matrix = NULL};
   matrix_t C;
 
+  s21_create_matrix(3, 3, &A);
+  s21_create_matrix(4, 3, &B);
+
   ck_assert_int_eq(s21_mult_matrix(&A, &B, &C), S21_CALCERR);
+
+  s21_remove_matrix(&A);
+  s21_remove_matrix(&B);
 }
 END_TEST
 
