@@ -232,14 +232,22 @@ int _get_minor(matrix_t *A, int excluded_row, int excluded_col,
                matrix_t *result);
 
 /**
- * @return S21_TRUE if matrix is square and S21_FALSE otherwise
+ * @brief Check if matrix is square (rows == columns)
+ * @param A Pointer to matrix to check
+ * @return `S21_TRUE` if matrix is valid and square, `S21_FALSE` otherwise
+ * 
+ * @note A matrix is considered square only if it's valid and has equal
+ * number of rows and columns
  */
-int _matrix_is_square(matrix_t *A);
+int _matrix_is_square(const matrix_t *A);
 
 /**
- * @brief check does the matrix are good
- *
- * @see implemented in `create_matrix.c`
+ * @brief Validate matrix structure and data
+ * @param A Pointer to matrix to validate
+ * @return `S21_TRUE` if matrix is valid, `S21_FALSE` otherwise
+ * 
+ * @note Checks that matrix pointer is not `NULL`, matrix data exists,
+ * and dimensions are positive
  */
 int _is_valid_source(const matrix_t *A);
 

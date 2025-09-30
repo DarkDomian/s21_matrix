@@ -2,17 +2,16 @@
 
 ![decimal](misc/s21_matrix.png)
 
-### 🧪 Work in progress...
-
-<!-- 
 ## Dependencies
 
-You better to have `clang-format`, `cppcheck`, `clang-tidy`, `valgrind`, `lcov` and `pkg-config`.
+You better to have `clang-format`, `cppcheck`, `valgrind`, `lcov`, `pkg-config` and `check`.
 
 For fast install on ubuntu-based system do:
 ```bash
-sudo apt-get -y install clang-tidy cppcheck clang-tidy valgrind lcov pkg-config
+sudo apt-get -y install cppcheck valgrind lcov pkg-config check
 ```
+
+<!-- 
 ## Make targets
 
 | Target          | Description |
