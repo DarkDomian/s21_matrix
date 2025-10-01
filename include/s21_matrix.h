@@ -16,11 +16,13 @@
 #define S21_CALCERR 2
 
 /*======================================================
-    BOOL CODE
+    BOOL CODE ETC.
 ========================================================*/
 
 #define S21_TRUE 1
 #define S21_FALSE 0
+
+#define S21_EPSILON 1e-6  // 10^-6
 
 /*======================================================
     MATRIX ITSELF
@@ -76,7 +78,7 @@ void s21_remove_matrix(matrix_t *A);
  * @note Matrices are considered equal if they have the same dimensions and
  * corresponding elements are identical (compared up to 6 decimal places).
  */
-int s21_eq_matrix(matrix_t *A, matrix_t *B);
+int s21_eq_matrix(const matrix_t *A, const matrix_t *B);
 
 /*======================================================
     ARITHMETIC OPERATIONS
@@ -201,8 +203,52 @@ int s21_calc_complements(matrix_t *A, matrix_t *result);
  * @note Two matrices have equal dimensions if they have the same number of rows
  * and the same number of columns. This is a prerequisite for many matrix
  * operations like addition and subtraction.
- * @note @see Implementation can be found in `eq_matrix.c`
+ *
+ * @see Implementation can be found in `eq_matrix.c`
  */
-int _has_equal_demensions(matrix_t *A, matrix_t *B);
+int _has_equal_demensions(const matrix_t *A, const matrix_t *B);
+
+/**
+ * @brief Extract a minor matrix by excluding specified row and column
+ * @param A Pointer to source matrix
+ * @param excluded_row Index of row to exclude (0-based)
+ * @param excluded_col Index of column to exclude (0-based)
+ * @param result Pointer to matrix structure where the minor will be stored
+ * @return `S21_SUCCESS` if operation successful, `S21_ERROR` if matrix is
+ * incorrect or indices are invalid, `S21_CALCERR` if matrix is too small
+ *
+ * @note The minor matrix is obtained by removing the specified row and column
+ * from the original matrix. The resulting matrix has dimensions (n-1) x (m-1).
+ * @note This is an internal helper function used for determinant calculation
+ * and cofactor matrix computation.
+ * @note The source matrix must be at least 2x2 to create a valid minor.
+ * @note Indices must be within bounds: `0 <= excluded_row < rows` and
+ * `0 <= excluded_col < columns`
+ *
+ * @see Used by `s21_determinant()` and `s21_calc_complements()`. Implementation
+ * can be found in `determinant.c`
+ */
+int _get_minor(matrix_t *A, int excluded_row, int excluded_col,
+               matrix_t *result);
+
+/**
+ * @brief Check if matrix is square (rows == columns)
+ * @param A Pointer to matrix to check
+ * @return `S21_TRUE` if matrix is valid and square, `S21_FALSE` otherwise
+ *
+ * @note A matrix is considered square only if it's valid and has equal
+ * number of rows and columns
+ */
+int _matrix_is_square(const matrix_t *A);
+
+/**
+ * @brief Validate matrix structure and data
+ * @param A Pointer to matrix to validate
+ * @return `S21_TRUE` if matrix is valid, `S21_FALSE` otherwise
+ *
+ * @note Checks that matrix pointer is not `NULL`, matrix data exists,
+ * and dimensions are positive
+ */
+int _is_valid_source(const matrix_t *A);
 
 #endif  // S21_MATRIX_H

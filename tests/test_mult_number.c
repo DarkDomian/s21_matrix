@@ -1,6 +1,17 @@
 #include "../include/s21_matrix.h"
 #include "../include/s21_suites.h"
 
+START_TEST(test_scalar_mult_handle_wrong_data) {
+  matrix_t A = {.rows = 0, .columns = 0, .matrix = NULL};
+  matrix_t C = {.rows = 0, .columns = 0, .matrix = NULL};
+
+  ck_assert_int_eq(s21_mult_number(&A, 1.1, &C), S21_ERROR);
+
+  s21_remove_matrix(&A);
+  s21_remove_matrix(&C);
+}
+END_TEST
+
 START_TEST(test_mult_easy_numbers) {
   matrix_t A = {.rows = 0, .columns = 0, .matrix = NULL};
   matrix_t C = {.rows = 0, .columns = 0, .matrix = NULL};
@@ -38,7 +49,7 @@ START_TEST(test_mult_by_zero) {
   double digit_a[9] = {10.235802,  71.790123,  0.001233,
                        199.999998, -16.900000, 5.246913};
 
-  double* ptr_digit = digit_a;
+  const double* ptr_digit = digit_a;
   for (int i = 0; i < A.rows * A.columns; ++i) A.matrix[0][i] = *ptr_digit++;
 
   ck_assert_int_eq(s21_mult_number(&A, 0, &C), S21_SUCCESS);
@@ -114,6 +125,7 @@ Suite* test_mult_number(void) {
   Suite* ps = suite_create("mult_number");
   TCase* tc = tcase_create("core");
 
+  tcase_add_test(tc, test_scalar_mult_handle_wrong_data);
   tcase_add_test(tc, test_mult_easy_numbers);
   tcase_add_test(tc, test_mult_by_zero);
   tcase_add_test(tc, test_mult_hard_numbers);
