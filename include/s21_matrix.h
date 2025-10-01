@@ -78,7 +78,7 @@ void s21_remove_matrix(matrix_t *A);
  * @note Matrices are considered equal if they have the same dimensions and
  * corresponding elements are identical (compared up to 6 decimal places).
  */
-int s21_eq_matrix(matrix_t *A, matrix_t *B);
+int s21_eq_matrix(const matrix_t *A, const matrix_t *B);
 
 /*======================================================
     ARITHMETIC OPERATIONS
@@ -206,7 +206,7 @@ int s21_calc_complements(matrix_t *A, matrix_t *result);
  *
  * @see Implementation can be found in `eq_matrix.c`
  */
-int _has_equal_demensions(matrix_t *A, matrix_t *B);
+int _has_equal_demensions(const matrix_t *A, const matrix_t *B);
 
 /**
  * @brief Extract a minor matrix by excluding specified row and column
@@ -235,7 +235,7 @@ int _get_minor(matrix_t *A, int excluded_row, int excluded_col,
  * @brief Check if matrix is square (rows == columns)
  * @param A Pointer to matrix to check
  * @return `S21_TRUE` if matrix is valid and square, `S21_FALSE` otherwise
- * 
+ *
  * @note A matrix is considered square only if it's valid and has equal
  * number of rows and columns
  */
@@ -245,7 +245,7 @@ int _matrix_is_square(const matrix_t *A);
  * @brief Validate matrix structure and data
  * @param A Pointer to matrix to validate
  * @return `S21_TRUE` if matrix is valid, `S21_FALSE` otherwise
- * 
+ *
  * @note Checks that matrix pointer is not `NULL`, matrix data exists,
  * and dimensions are positive
  */

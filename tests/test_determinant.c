@@ -1,6 +1,16 @@
 #include "../include/s21_matrix.h"
 #include "../include/s21_suites.h"
 
+START_TEST(test_determ_handle_wrong_data) {
+  matrix_t A = {.rows = 0, .columns = 0, .matrix = NULL};
+  double det = 0;
+
+  ck_assert_int_eq(s21_determinant(&A, &det), S21_ERROR);
+
+  s21_remove_matrix(&A);
+}
+END_TEST
+
 START_TEST(test_determ_wrong_dimensions) {
   matrix_t A = {.rows = 0, .columns = 0, .matrix = NULL};
   s21_create_matrix(10, 11, &A);
@@ -98,16 +108,44 @@ START_TEST(test_determ_matrix_5_x_5) {
 }
 END_TEST
 
+START_TEST(test_determ_matrix_6_x_6) {
+  matrix_t A = {.rows = 0, .columns = 0, .matrix = NULL};
+  s21_create_matrix(6, 6, &A);
+
+  double digit_a[] = {1.57,   2.0,   3.79,  4.0,   5.0,    6.23,   7.0,    8.15,
+                      9.0,    10.37, 11.0,  12.0,  13.0,   14.0,   15.584, 16.0,
+                      17.83,  18.0,  19.26, 20.0,  21.0,   22.491, 23.0,   24.0,
+                      25.0,   26.72, 27.0,  28.0,  29.956, 30.0,   31.0,   32.0,
+                      33.138, 34.0,  35.0,  36.671};
+
+  double* ptr_digit = digit_a;
+  for (int i = 0; i < A.rows * A.columns; ++i) A.matrix[0][i] = *ptr_digit++;
+
+  double det = 0, exp_det = -23.715264820856447;
+
+  ck_assert_int_eq(s21_determinant(&A, &det), S21_SUCCESS);
+
+  double abs = fabs(det - exp_det);
+  ck_assert_msg(abs < S21_EPSILON,
+                "Expected: %.10f, Actual: %.10f, Diff: %.10Lf\n", exp_det, det,
+                fabsl(abs));
+
+  s21_remove_matrix(&A);
+}
+END_TEST
+
 Suite* test_determinant(void) {
   Suite* ps = suite_create("determinant");
   TCase* tc = tcase_create("core");
 
+  tcase_add_test(tc, test_determ_handle_wrong_data);
   tcase_add_test(tc, test_determ_wrong_dimensions);
   tcase_add_test(tc, test_determ_matrix_1_x_1_base_case);
   tcase_add_test(tc, test_determ_matrix_2_x_2_base_case);
   tcase_add_test(tc, test_determ_matrix_3_x_3);
   tcase_add_test(tc, test_determ_matrix_4_x_4);
   tcase_add_test(tc, test_determ_matrix_5_x_5);
+  tcase_add_test(tc, test_determ_matrix_6_x_6);
 
   suite_add_tcase(ps, tc);
   return ps;

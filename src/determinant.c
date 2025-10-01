@@ -30,7 +30,7 @@ int s21_determinant(matrix_t *A, double *result) {
   int res = S21_SUCCESS;
 
   if (!_is_valid_source(A)) res = S21_ERROR;
-  if (!_matrix_is_square(A)) res = S21_CALCERR;
+  if (!res && !_matrix_is_square(A)) res = S21_CALCERR;
 
   if (!res) {
     switch (A->columns) {
@@ -54,31 +54,6 @@ int s21_determinant(matrix_t *A, double *result) {
         }
     }
   }
-
-#if 0
-  if (!res && A->columns == 1) {
-    *result += A->matrix[0][0];
-    return S21_SUCCESS;
-  }
-
-  if (!res && A->columns == 2) {
-    *result += (A->matrix[0][0] * A->matrix[1][1]) -
-               (A->matrix[1][0] * A->matrix[0][1]);
-    return S21_SUCCESS;
-  }
-
-  *result = 0;
-
-  for (int i = 0; i < A->rows && !res; ++i) {
-    matrix_t T;
-    _get_minor(A, 0, i, &T);
-    double minor_det = 0;
-    s21_determinant(&T, &minor_det);
-    int sign = (i % 2) ? -1.0 : 1.0;
-    *result += sign * (A->matrix[0][i] * minor_det);
-    s21_remove_matrix(&T);
-  }
-#endif
 
   return res;
 }

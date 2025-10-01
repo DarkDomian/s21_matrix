@@ -1,6 +1,17 @@
 #include "../include/s21_matrix.h"
 #include "../include/s21_suites.h"
 
+START_TEST(test_transpose_handle_wrong_data) {
+  matrix_t A = {.rows = 0, .columns = 0, .matrix = NULL};
+  matrix_t B = {.rows = 0, .columns = 0, .matrix = NULL};
+
+  ck_assert_int_eq(s21_transpose(&A, &B), S21_ERROR);
+
+  s21_remove_matrix(&A);
+  s21_remove_matrix(&B);
+}
+END_TEST
+
 START_TEST(test_transpose_is_flip) {
   matrix_t A = {.rows = 0, .columns = 0, .matrix = NULL};
   matrix_t B = {.rows = 0, .columns = 0, .matrix = NULL};
@@ -48,6 +59,7 @@ Suite* test_transpose(void) {
   Suite* ps = suite_create("transpose");
   TCase* tc = tcase_create("core");
 
+  tcase_add_test(tc, test_transpose_handle_wrong_data);
   tcase_add_test(tc, test_transpose_is_flip);
   tcase_add_test(tc, test_transpose_right_data);
 

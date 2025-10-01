@@ -1,6 +1,19 @@
 #include "../include/s21_matrix.h"
 #include "../include/s21_suites.h"
 
+START_TEST(test_mult_matrix_handle_wrong_data) {
+  matrix_t A = {.rows = 0, .columns = 0, .matrix = NULL};
+  matrix_t B = {.rows = 0, .columns = 0, .matrix = NULL};
+  matrix_t C = {.rows = 0, .columns = 0, .matrix = NULL};
+
+  ck_assert_int_eq(s21_mult_matrix(&A, &B, &C), S21_ERROR);
+
+  s21_remove_matrix(&A);
+  s21_remove_matrix(&B);
+  s21_remove_matrix(&C);
+}
+END_TEST
+
 START_TEST(test_wrong_dimensions_mult_m) {
   matrix_t A = {.rows = 3, .columns = 3, .matrix = NULL};
   matrix_t B = {.rows = 4, .columns = 3, .matrix = NULL};
@@ -87,6 +100,7 @@ Suite* test_mult_matrix(void) {
   Suite* ps = suite_create("mult_matrix");
   TCase* tc = tcase_create("core");
 
+  tcase_add_test(tc, test_mult_matrix_handle_wrong_data);
   tcase_add_test(tc, test_wrong_dimensions_mult_m);
   tcase_add_test(tc, test_expend_to_zero_mult_m);
   tcase_add_test(tc, test_different_dimension_mult_m);
